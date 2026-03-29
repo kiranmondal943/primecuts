@@ -6,3 +6,25 @@ body {
   background-color: #F8F9FA;
   color: #1D3557;
 }
+
+/* Custom Animations for PrimeCuts */
+@keyframes pulse-custom {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .7; }
+}
+
+.animate-pulse-custom {
+  animation: pulse-custom 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Ensure the layout doesn't shift when printing */
+@media print {
+  nav, footer, .print-hidden, button {
+    display: none !important;
+  }
+  body {
+    background-color: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}

@@ -26,40 +26,52 @@ export default function Home() {
   return (
     <div className="space-y-12 sm:space-y-16 pb-20 w-full overflow-x-hidden">
       
-      {/* DYNAMIC HERO SECTION (Fixed Static Look & Missing Image) */}
-      <section className="relative h-[70vh] sm:h-[80vh] flex items-center bg-[#1D3557] overflow-hidden">
+      {/* DYNAMIC HERO SECTION - OPTIMIZED FOR SPACING & READABILITY */}
+      <section className="relative h-[85vh] flex items-center bg-[#1D3557] overflow-hidden">
         <div className="absolute inset-0 z-0">
           <motion.img 
-            initial={{ scale: 1.2 }}
+            initial={{ scale: 1.15 }}
             animate={{ scale: 1 }}
-            transition={{ duration: 10, repeat: Infinity, repeatType: "reverse" }}
+            transition={{ duration: 8, repeat: Infinity, repeatType: "reverse" }}
             src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=2069&auto=format&fit=crop" 
             alt="Premium Fresh Meat" 
-            className="w-full h-full object-cover opacity-50"
+            className="w-full h-full object-cover opacity-40"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#1D3557] via-[#1D3557]/40 to-transparent"></div>
+          {/* Enhanced Gradient for better text contrast */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#1D3557] via-[#1D3557]/70 to-transparent"></div>
         </div>
         
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-start">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex flex-col items-start w-full">
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="max-w-4xl" // Increased container width
           >
-            <span className="bg-[#2A9D8F] text-white px-3 py-1 rounded text-[10px] font-black uppercase tracking-[0.2em] mb-4 flex items-center gap-1 shadow-md w-fit">
-              <Clock size={14} /> Delivered in 90 Minutes
-            </span>
-            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black mb-4 leading-tight max-w-2xl text-white">
-              Premium Cuts,<br/> <span className="text-[#E63946]">Unmatched</span> Freshness.
+            {/* Elegant Badge with more spacing */}
+            <div className="mb-8">
+              <span className="bg-[#2A9D8F] text-white px-5 py-2 rounded-full text-[11px] font-black uppercase tracking-[0.25em] shadow-2xl">
+                <Clock className="inline-block mr-2 mt-[-2px]" size={14} /> Delivered in 90 Minutes
+              </span>
+            </div>
+
+            {/* Heading with better line-height */}
+            <h1 className="text-5xl sm:text-7xl md:text-8xl font-black mb-8 leading-[1.1] tracking-tight text-white">
+              Premium Cuts,<br/> 
+              <span className="text-[#E63946] inline-block mt-2">Unmatched</span> Freshness.
             </h1>
-            <p className="text-base sm:text-lg md:text-xl mb-8 max-w-xl text-gray-100 font-medium">
-              Hygienically packed, fully traceable fresh meat and seafood delivered directly to your doorstep. Never frozen.
+
+            {/* Description with more width and line-height */}
+            <p className="text-lg sm:text-xl md:text-2xl mb-12 max-w-2xl text-white/80 leading-relaxed font-medium">
+              Hygienically packed, fully traceable fresh meat and seafood delivered directly to your doorstep. <span className="text-white font-bold">Never frozen. Always fresh.</span>
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-              <a href="#bestsellers" className="bg-[#E63946] hover:bg-red-700 text-white font-bold py-4 px-10 rounded-2xl shadow-xl transform transition hover:scale-105 text-center">
+
+            {/* Buttons with more breathing room */}
+            <div className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto">
+              <a href="#bestsellers" className="bg-[#E63946] hover:bg-red-700 text-white font-black py-5 px-12 rounded-2xl shadow-2xl transform transition hover:scale-105 text-center text-sm uppercase tracking-widest">
                 Shop Best Sellers
               </a>
-              <Link href="/subscriptions" className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-bold py-4 px-10 rounded-2xl border border-white/20 transition text-center">
+              <Link href="/subscriptions" className="bg-white/10 hover:bg-white/20 backdrop-blur-xl text-white font-black py-5 px-12 rounded-2xl border border-white/20 transition text-center text-sm uppercase tracking-widest">
                 Subscription Packs
               </Link>
             </div>

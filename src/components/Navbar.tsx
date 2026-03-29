@@ -1,0 +1,62 @@
+"use client"; // Required to listen to live state
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { ShoppingBag, User, Menu, Search } from 'lucide-react';
+import { useCartStore } from '@/store/useCartStore';
+
+export default function Navbar() {
+  const getCartCount = useCartStore((state) => state.getCartCount);
+  
+  // Fix for Next.js hydration (ensures the cart loads correctly on refresh)
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => setIsMounted(true), []);
+
+  const cartCount = isMounted ? getCartCount() : 0;
+
+  return (
+    <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+        
+        {/* Logo & Mobile Menu */}
+        <div className="flex items-center gap-4">
+          <button className="lg:hidden text-[#1D3557] hover:text-[#E63946] transition">
+            <Menu size={24} />
+          </button>
+          <Link href="/" className="text-2xl font-extrabold tracking-tight text-[#E63946]">
+            Prime<span className="text-[#1D3557]">Cuts</span>
+          </Link>
+        </div>
+
+        {/* Desktop Navigation */}
+        <div className="hidden lg:flex space-x-6 text-sm font-semibold text-[#1D3557]">
+          <Link href="#" className="hover:text-[#E63946] transition">Chicken</Link>
+          <Link href="#" className="hover:text-[#E63946] transition">Meat</Link>
+          <Link href="#" className="hover:text-[#E63946] transition">Seafood</Link>
+          <Link href="#" className="hover:text-[#E63946] transition">Ready-to-cook</Link>
+          <Link href="#" className="text-[#E63946] hover:text-red-700 transition">Offers</Link>
+        </div>
+
+        {/* Actions: Search, Account, Cart */}
+        <div className="flex items-center gap-4 sm:gap-6">
+          <button className="hidden sm:block text-[#1D3557] hover:text-[#E63946] transition">
+            <Search size={20} />
+          </button>
+          <button className="text-[#1D3557] hover:text-[#E63946] transition flex items-center gap-1">
+            <User size={20} />
+            <span className="hidden sm:inline text-sm font-medium">Log In</span>
+          </button>
+          
+          {/* CART BUTTON WITH LIVE BUBBLE */}
+          <Link href="/cart" className="relative text-[#1D3557] hover:text-[#E63946] transition bg-gray-50 p-2 rounded-full border border-gray-200 shadow-sm hover:shadow-md">
+            <ShoppingBag size={20} />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-[#E63946] text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full animate-pulse shadow-md">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+        </div>
+      </div>
+    </nav>
+  );
+}

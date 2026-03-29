@@ -14,9 +14,10 @@ export interface CartItem {
 
 interface CartStore {
   items: CartItem[];
+  lastOrder: CartItem[]; // NEW: Stores the items for the invoice
   addItem: (item: CartItem) => void;
   removeItem: (id: string, cutType: string) => void;
-  clearCart: () => void; // NEW
+  clearCart: () => void;
   getTotal: () => number;
   getCartCount: () => number;
 }
@@ -25,6 +26,7 @@ export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
+      lastOrder: [],
       addItem: (item) => set((state) => {
         const existingItemIndex = state.items.findIndex(
           (i) => i.id === item.id && i.cutType === item.cutType && i.weight === item.weight
@@ -39,7 +41,10 @@ export const useCartStore = create<CartStore>()(
       removeItem: (id, cutType) => set((state) => ({
         items: state.items.filter((i) => !(i.id === id && i.cutType === cutType))
       })),
-      clearCart: () => set({ items: [] }), // NEW: Clears the cart
+      clearCart: () => set((state) => ({ 
+        lastOrder: [...state.items], // Save items to lastOrder BEFORE clearing
+        items: [] 
+      })),
       getTotal: () => get().items.reduce((total, item) => total + (item.finalPrice * item.quantity), 0),
       getCartCount: () => get().items.reduce((count, item) => count + item.quantity, 0)
     }),

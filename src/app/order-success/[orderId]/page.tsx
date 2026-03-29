@@ -1,168 +1,160 @@
 "use client";
-import { CheckCircle, Truck, Package, Printer, MapPin, CreditCard, Mail, ArrowLeft, Download } from 'lucide-react';
+import { Printer, Download, Mail, ArrowLeft, Check } from 'lucide-react';
 import Link from 'next/link';
 
 export default function OrderSuccessPage({ params }: { params: { orderId: string } }) {
-  const date = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  const date = new Date().toLocaleDateString('en-US', { 
+    month: 'long', 
+    day: 'numeric', 
+    year: 'numeric' 
+  });
+
   const items = [
     { name: 'Premium Chicken Breast', cut: 'Cubes', weight: '500g', qty: 1, price: 8.99 },
     { name: 'Norwegian Salmon Fillet', cut: 'Fillet', weight: '300g', qty: 1, price: 14.50 }
   ];
 
+  const subtotal = 23.49;
+  const tax = 1.17;
+  const total = subtotal + tax;
+
   return (
-    // mt-24 ensures we are well below the sticky navbar
-    <div className="bg-[#F4F7F6] min-h-screen mt-16 pb-20">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
+    <div className="bg-gray-100 min-h-screen py-12 px-4 print:bg-white print:py-0">
+      
+      {/* 1. TOP ACTIONS (Hidden when printing) */}
+      <div className="max-w-4xl mx-auto mb-8 flex justify-between items-center print:hidden">
+        <Link href="/" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-[#E63946] transition">
+          <ArrowLeft size={16} /> Back to Store
+        </Link>
+        <div className="flex gap-3">
+          <button 
+            onClick={() => window.print()} 
+            className="bg-white border border-gray-200 text-[#1D3557] px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-2 hover:bg-gray-50 shadow-sm"
+          >
+            <Printer size={16} /> Print Invoice
+          </button>
+          <button className="bg-[#1D3557] text-white px-4 py-2 rounded-lg font-bold text-xs shadow-md">
+            Download PDF
+          </button>
+        </div>
+      </div>
+
+      {/* 2. THE FORMAL INVOICE DOCUMENT */}
+      <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-sm overflow-hidden print:shadow-none print:border print:border-gray-100">
         
-        {/* TOP BAR ACTIONS */}
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-10 gap-4">
-          <div className="flex items-center gap-3">
-             <Link href="/" className="bg-white p-2 rounded-full shadow-sm hover:text-[#E63946] transition">
-                <ArrowLeft size={20} />
-             </Link>
-             <div>
-                <h1 className="text-2xl font-black text-[#1D3557]">Order Confirmed</h1>
-                <p className="text-sm text-gray-500 font-medium">Order ID: {params.orderId}</p>
-             </div>
-          </div>
-          <div className="flex gap-3">
-             <button onClick={() => window.print()} className="bg-white text-[#1D3557] px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm border border-gray-200 flex items-center gap-2 hover:bg-gray-50 transition">
-                <Printer size={18} /> Print Invoice
-             </button>
-             <button className="bg-[#1D3557] text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2 hover:bg-opacity-90 transition">
-                <Download size={18} /> Download PDF
-             </button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-          
-          {/* LEFT: LIVE TRACKING (8 Columns) */}
-          <div className="lg:col-span-7 space-y-6">
+        {/* Header Section */}
+        <div className="p-8 sm:p-12 border-b border-gray-100 flex flex-col sm:flex-row justify-between gap-8">
+          <div>
+            <h1 className="text-3xl font-black text-[#E63946] mb-1">PrimeCuts</h1>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] mb-6">Premium Fresh Meat & Seafood</p>
             
-            {/* Tracking Card */}
-            <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100">
-               <h2 className="text-xl font-bold text-[#1D3557] mb-8">Where's your order?</h2>
-               
-               <div className="space-y-10 relative">
-                  {/* The vertical tracking line */}
-                  <div className="absolute left-[15px] top-2 bottom-2 w-[2px] bg-gray-100"></div>
-
-                  <div className="relative flex gap-6">
-                    <div className="w-8 h-8 rounded-full bg-[#2A9D8F] flex items-center justify-center text-white ring-4 ring-[#2A9D8F]/10">
-                      <CheckCircle size={16} />
-                    </div>
-                    <div>
-                      <p className="font-bold text-[#1D3557]">Order Received</p>
-                      <p className="text-sm text-gray-500">Confirmed at 03:09 PM. We're on it!</p>
-                    </div>
-                  </div>
-
-                  <div className="relative flex gap-6">
-                    <div className="w-8 h-8 rounded-full bg-[#E63946] flex items-center justify-center text-white shadow-lg shadow-[#E63946]/30 animate-pulse">
-                      <Package size={16} />
-                    </div>
-                    <div>
-                      <p className="font-bold text-[#1D3557]">Premium Hand-Cutting</p>
-                      <p className="text-sm text-gray-500">Our master butchers are preparing your custom cuts.</p>
-                    </div>
-                  </div>
-
-                  <div className="relative flex gap-6 opacity-40">
-                    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
-                      <Truck size={16} />
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-500">Out for Delivery</p>
-                      <p className="text-sm text-gray-400">On its way in a temperature-controlled bag.</p>
-                    </div>
-                  </div>
-               </div>
-            </div>
-
-            {/* Delivery Details */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-                <MapPin className="text-[#E63946] mb-3" size={24} />
-                <h3 className="font-bold text-[#1D3557] mb-1">Shipping To</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">John Doe<br/>123 Premium Avenue, Fresh City<br/>Building 4, Apt 12B</p>
-              </div>
-              <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-                <CreditCard className="text-[#2A9D8F] mb-3" size={24} />
-                <h3 className="font-bold text-[#1D3557] mb-1">Payment Method</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">Cash on Delivery<br/>Amount: $23.49</p>
-              </div>
+            <div className="text-xs space-y-1 text-gray-500">
+              <p className="font-bold text-[#1D3557]">PrimeCuts Logistics Ltd.</p>
+              <p>44 Gourmet Plaza, Cold Chain District</p>
+              <p>Fresh City, FC 90210</p>
+              <p>support@primecuts.com</p>
             </div>
           </div>
 
-          {/* RIGHT: PROFESSIONAL PAPER INVOICE (5 Columns) */}
-          <div className="lg:col-span-5">
-            <div className="bg-white rounded-xl shadow-2xl border-t-[10px] border-[#1D3557] overflow-hidden relative">
-              {/* Decorative "Hole Punch" look for paper style */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-2 bg-gray-100 rounded-b-full"></div>
-              
-              <div className="p-8 sm:p-10">
-                <div className="flex justify-between items-start mb-10">
-                   <div>
-                      <h2 className="text-2xl font-black text-[#E63946]">PrimeCuts</h2>
-                      <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase mt-1">Premium Freshness</p>
-                   </div>
-                   <div className="text-right">
-                      <p className="text-xs font-bold text-[#1D3557]">INVOICE</p>
-                      <p className="text-[10px] text-gray-400 font-medium">{date}</p>
-                   </div>
-                </div>
-
-                <div className="space-y-6 mb-10">
-                   {items.map((item, i) => (
-                      <div key={i} className="flex justify-between items-start">
-                         <div>
-                            <p className="text-sm font-bold text-[#1D3557]">{item.name}</p>
-                            <p className="text-[11px] text-gray-500">{item.cut} • {item.weight} • Qty {item.qty}</p>
-                         </div>
-                         <p className="text-sm font-bold text-[#1D3557]">${item.price.toFixed(2)}</p>
-                      </div>
-                   ))}
-                </div>
-
-                <div className="border-t border-gray-100 pt-6 space-y-3">
-                   <div className="flex justify-between text-xs font-medium text-gray-500">
-                      <span>Subtotal</span>
-                      <span>$23.49</span>
-                   </div>
-                   <div className="flex justify-between text-xs font-medium text-[#2A9D8F]">
-                      <span>Shipping Fee</span>
-                      <span>FREE</span>
-                   </div>
-                   <div className="flex justify-between text-xs font-medium text-gray-500">
-                      <span>GST (5%)</span>
-                      <span>$1.17</span>
-                   </div>
-                   <div className="flex justify-between items-center pt-4 border-t border-[#1D3557] mt-4">
-                      <span className="text-sm font-black text-[#1D3557] uppercase tracking-wider">Total Paid</span>
-                      <span className="text-2xl font-black text-[#E63946]">$23.49</span>
-                   </div>
-                </div>
-
-                <div className="mt-12 text-center">
-                   <div className="inline-block p-3 bg-gray-50 rounded-xl mb-4 border border-gray-100">
-                      <p className="text-[10px] font-bold text-[#1D3557] leading-tight">SCAN TO TRACK<br/>ON MOBILE</p>
-                   </div>
-                   <p className="text-[10px] text-gray-400 italic">This is a computer generated invoice. No signature required.</p>
-                </div>
-              </div>
-              
-              {/* "Paper Tear" effect at bottom */}
-              <div className="h-2 w-full bg-[radial-gradient(circle,_#F4F7F6_5px,_transparent_0)] bg-[length:20px_20px]"></div>
-            </div>
-
-            <div className="mt-8 flex items-center justify-center gap-2 text-gray-400 hover:text-[#E63946] transition cursor-pointer group">
-              <Mail size={16} />
-              <span className="text-xs font-bold uppercase tracking-widest group-hover:underline">Need help? Chat with Support</span>
+          <div className="text-left sm:text-right">
+            <h2 className="text-4xl font-light text-gray-300 uppercase mb-4">Invoice</h2>
+            <div className="text-xs space-y-1">
+              <p className="text-gray-400 font-medium">Invoice Number</p>
+              <p className="font-bold text-[#1D3557] text-lg">{params.orderId}</p>
+              <p className="text-gray-400 font-medium mt-4">Date Issued</p>
+              <p className="font-bold text-[#1D3557]">{date}</p>
             </div>
           </div>
-
         </div>
+
+        {/* Billing & Shipping Section */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 p-8 sm:p-12 bg-gray-50/50">
+          <div>
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Bill To</p>
+            <p className="text-sm font-bold text-[#1D3557]">John Doe</p>
+            <p className="text-sm text-gray-500 leading-relaxed mt-1">
+              123 Premium Avenue, Fresh City<br />
+              Building 4, Apt 12B<br />
+              Phone: +1 555-0123
+            </p>
+          </div>
+          <div>
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Payment Info</p>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-2 h-2 rounded-full bg-[#2A9D8F]"></div>
+              <p className="text-sm font-bold text-[#1D3557]">Cash on Delivery</p>
+            </div>
+            <p className="text-[11px] text-[#2A9D8F] font-bold uppercase tracking-tight">Status: Unpaid (Due on arrival)</p>
+          </div>
+        </div>
+
+        {/* Itemized Table */}
+        <div className="p-8 sm:p-12">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b-2 border-[#1D3557]">
+                <th className="py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Description</th>
+                <th className="py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Qty</th>
+                <th className="py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Unit Price</th>
+                <th className="py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {items.map((item, idx) => (
+                <tr key={idx}>
+                  <td className="py-6">
+                    <p className="text-sm font-bold text-[#1D3557]">{item.name}</p>
+                    <p className="text-[11px] text-gray-400 mt-0.5">{item.cut} | {item.weight}</p>
+                  </td>
+                  <td className="py-6 text-sm text-center text-gray-600">{item.qty}</td>
+                  <td className="py-6 text-sm text-right text-gray-600">${item.price.toFixed(2)}</td>
+                  <td className="py-6 text-sm font-bold text-[#1D3557] text-right">${(item.price * item.qty).toFixed(2)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Totals Section */}
+          <div className="mt-8 flex justify-end">
+            <div className="w-full sm:w-64 space-y-3">
+              <div className="flex justify-between text-sm text-gray-500">
+                <span>Subtotal</span>
+                <span>${subtotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-sm text-[#2A9D8F] font-bold">
+                <span>Shipping</span>
+                <span>FREE</span>
+              </div>
+              <div className="flex justify-between text-sm text-gray-500">
+                <span>Sales Tax (5%)</span>
+                <span>${tax.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between pt-4 border-t-2 border-[#1D3557]">
+                <span className="text-base font-black text-[#1D3557] uppercase tracking-tighter">Total Amount</span>
+                <span className="text-2xl font-black text-[#E63946]">${total.toFixed(2)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Note */}
+        <div className="p-8 sm:p-12 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
+            <Check className="text-[#2A9D8F]" size={16} />
+            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Certified Freshness Guaranteed</p>
+          </div>
+          <p className="text-[10px] text-gray-400 italic text-center sm:text-right leading-relaxed">
+            This is an electronically generated invoice.<br />
+            For any discrepancies, contact us within 2 hours of delivery.
+          </p>
+        </div>
+      </div>
+
+      {/* Support (Hidden when printing) */}
+      <div className="max-w-4xl mx-auto mt-8 text-center print:hidden">
+        <p className="text-sm text-gray-400">
+          Having trouble? <Link href="#" className="text-[#E63946] font-bold underline ml-1">Contact Support</Link> or call 1-800-FRESH
+        </p>
       </div>
     </div>
   );

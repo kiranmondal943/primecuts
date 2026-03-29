@@ -2,9 +2,17 @@
 import { Printer, Download, ArrowLeft, Check } from 'lucide-react';
 import Link from 'next/link';
 import { useCartStore } from '@/store/useCartStore';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react'; // Added 'use'
 
-export default function OrderSuccessPage({ params }: { params: { orderId: string } }) {
+interface OrderSuccessProps {
+  params: Promise<{ orderId: string }> | { orderId: string };
+}
+
+export default function OrderSuccessPage({ params }: OrderSuccessProps) {
+  // NEXT.JS 14 BUILD FIX: Safely unwrap params
+  const resolvedParams = params instanceof Promise ? use(params) : params;
+  const orderId = resolvedParams.orderId;
+
   const lastOrder = useCartStore((state) => state.lastOrder);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -12,8 +20,17 @@ export default function OrderSuccessPage({ params }: { params: { orderId: string
     setIsMounted(true);
   }, []);
 
-  if (!isMounted || lastOrder.length === 0) {
-    return <div className="p-20 text-center">Loading Invoice...</div>;
+  // Hydration protection
+  if (!isMounted) return null;
+
+  // Build Safety: If someone visits directly without an order
+  if (lastOrder.length === 0) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-10 text-center">
+        <h2 className="text-2xl font-bold text-[#1D3557] mb-4">No Recent Order Found</h2>
+        <Link href="/" className="bg-[#E63946] text-white px-6 py-2 rounded-lg font-bold">Return to Shop</Link>
+      </div>
+    );
   }
 
   const subtotal = lastOrder.reduce((acc, item) => acc + (item.finalPrice * item.quantity), 0);
@@ -22,11 +39,11 @@ export default function OrderSuccessPage({ params }: { params: { orderId: string
   const date = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
   const handleDownload = () => {
-     window.print(); // Standard way to "Download PDF" on web without external servers
+     window.print();
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen py-10 px-4 print:bg-white print:py-0 print:m-0">
+    <div className="bg-gray-100 min-h-screen py-10 px-4 mt-20 print:bg-white print:py-0 print:m-0 print:mt-0">
       
       {/* 1. TOP ACTIONS (Hidden when printing) */}
       <div className="max-w-4xl mx-auto mb-8 flex justify-between items-center print:hidden">
@@ -44,7 +61,6 @@ export default function OrderSuccessPage({ params }: { params: { orderId: string
       </div>
 
       {/* 2. THE ACTUAL INVOICE CONTAINER */}
-      {/* print:shadow-none and print:border-0 ensure it looks like a clean document */}
       <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-sm overflow-hidden print:shadow-none print:m-0 print:w-full">
         
         {/* Invoice Header */}
@@ -61,7 +77,7 @@ export default function OrderSuccessPage({ params }: { params: { orderId: string
           <div className="sm:text-right">
             <h2 className="text-4xl font-light text-gray-300 uppercase mb-4">Invoice</h2>
             <p className="text-xs text-gray-400 font-medium uppercase">Order ID</p>
-            <p className="font-bold text-[#1D3557] text-xl mb-4">{params.orderId}</p>
+            <p className="font-bold text-[#1D3557] text-xl mb-4">{orderId}</p>
             <p className="text-xs text-gray-400 font-medium uppercase">Date</p>
             <p className="font-bold text-[#1D3557]">{date}</p>
           </div>
@@ -81,7 +97,7 @@ export default function OrderSuccessPage({ params }: { params: { orderId: string
           </div>
         </div>
 
-        {/* Itemized Table - Using REAL DATA from lastOrder */}
+        {/* Itemized Table */}
         <div className="p-8 sm:p-12">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -141,20 +157,21 @@ export default function OrderSuccessPage({ params }: { params: { orderId: string
         </div>
       </div>
       
-      {/* Hide the navigation bar globally when printing */}
       <style jsx global>{`
         @media print {
-          nav, footer, .print-hidden, button {
+          nav, footer, .print-hidden, button, .bg-gray-100 {
             display: none !important;
           }
           body {
             background-color: white !important;
+            margin: 0 !important;
+            padding: 0 !important;
           }
           .max-w-4xl {
             max-width: 100% !important;
             width: 100% !important;
             margin: 0 !important;
-            padding: 0 !important;
+            box-shadow: none !important;
           }
         }
       `}</style>

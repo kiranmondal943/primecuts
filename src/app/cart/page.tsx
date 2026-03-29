@@ -96,9 +96,9 @@ export default function CartPage() {
               <span>${total.toFixed(2)}</span>
             </div>
 
-            <button className="w-full bg-[#E63946] hover:bg-red-700 text-white py-4 rounded-xl font-bold text-lg transition flex justify-center items-center gap-2 shadow-lg mb-6">
+            <Link href="/checkout" className="w-full bg-[#E63946] hover:bg-red-700 text-white py-4 rounded-xl font-bold text-lg transition flex justify-center items-center gap-2 shadow-lg mb-6">
               Proceed to Checkout <ArrowRight size={20} />
-            </button>
+            </Link>
 
             {/* Trust Markers for Conversion */}
             <div className="space-y-4 pt-4 border-t">
